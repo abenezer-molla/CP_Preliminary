@@ -4,6 +4,7 @@ import {Form, Card} from 'react-bootstrap'
 import SquareDisplay from './SquareDisplay';
 import HomeDisc from './HomeDisc';
 import NavBar from './NavBar';
+import Footer from './Footer';
 
 import {Link} from 'react-router-dom'
  
@@ -18,6 +19,7 @@ function Home() {
       <NavBar/>
       <HomeDisc/>
       <SquareDisplay/>
+      <Footer/>
       
 
 

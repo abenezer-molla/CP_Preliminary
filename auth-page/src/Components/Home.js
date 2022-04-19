@@ -1,5 +1,9 @@
 import React from 'react'
+import './App.css';
 import {Form, Card} from 'react-bootstrap'
+import SquareDisplay from './SquareDisplay';
+import HomeDisc from './HomeDisc';
+import NavBar from './NavBar';
 
 import {Link} from 'react-router-dom'
  
@@ -7,9 +11,16 @@ function Home() {
   return (
     <Card>
     <Form>
-    <div><h1>Home</h1></div>
+    
     <Form.Group>
-    <small> Logout <Link to='/login'>Logout</Link> </small>
+      
+
+      <NavBar/>
+      <HomeDisc/>
+      <SquareDisplay/>
+      
+
+
     </Form.Group>
 
     </Form>
@@ -20,3 +31,5 @@ function Home() {
 }
 
 export default Home
+
+

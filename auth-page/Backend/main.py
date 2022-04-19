@@ -11,28 +11,25 @@ from auth import auth_ns
 from flask_cors import CORS
 
 
-def create_app(config):
+app=Flask(__name__)
+app.config.from_object(DevConfig)
+db.init_app(app)
+
+migrate=Migrate(app,db)
+JWTManager(app)
+CORS(app)
+
+api=Api(app,doc='/docs')
+api.add_namespace(auth_ns)
+
+@app.shell_context_processor
+def make_shell_context():
+    return {
+        "db":db,
+        "user":User
+    }
 
 
-    app=Flask(__name__)
-    app.config.from_object(config)
-    db.init_app(app)
-
-    migrate=Migrate(app,db)
-    JWTManager(app)
-    CORS(app)
-
-    api=Api(app,doc='/docs')
-    api.add_namespace(auth_ns)
-
-    @app.shell_context_processor
-    def make_shell_context():
-        return {
-            "db":db,
-            "user":User
-        }
-
-
-
-    return app
+if __name__ == '__main__':
+    app.run()
 

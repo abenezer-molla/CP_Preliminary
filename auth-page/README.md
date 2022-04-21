@@ -68,3 +68,15 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+To run the server: follow the following:
+
+1. change your directory to Backend
+
+   - cd auth-page
+   - cd Backend
+
+2. run the following command to start the veritual environment - pipenv shell
+3. run the following commands to export Flask app and start the server.
+   - export FLASK_APP=main.py
+   - python main.py

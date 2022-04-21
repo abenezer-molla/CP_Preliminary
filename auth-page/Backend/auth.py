@@ -7,10 +7,7 @@ get_jwt_identity,
 jwt_required)
 from flask import Flask,request,jsonify,make_response
 
-
 auth_ns=Namespace('auth',description="A namespace for Authentication")
-
-
 
 signup_model=auth_ns.model(
     'SignUp',
@@ -20,7 +17,6 @@ signup_model=auth_ns.model(
         "password":fields.String()
     }
 )
-
 
 login_model=auth_ns.model(
     'Login',
@@ -35,27 +31,24 @@ class SignUp(Resource):
     @auth_ns.expect(signup_model)
     def post(self):
         data=request.get_json()
-
-
         username=data.get('username')
 
-        db_user=User.query.filter_by(username=username).first()
+        currentUser=User.query.filter_by(username=username).first()
 
-        if db_user is not None:
+        if currentUser is not None: # it means it has already been registered
             return jsonify({"message":f"User with username {username} already exists"})
 
-        new_user=User(
+        newUser=User(
             username=data.get('username'),
             email=data.get('email'),
             password=generate_password_hash(data.get('password'))
-        )
+        ) # assigning the values from the UI input into the respective db values. 
 
-        new_user.save()
+        newUser.save()
 
-        return make_response(jsonify({"message":"User created successfuly"}),201)
+        return make_response(jsonify({"message":"User created/registered successfuly"}),201)
 
-
-@auth_ns.route('/login')
+@auth_ns.route('/login') # function for Login user
 class Login(Resource):
 
     @auth_ns.expect(login_model)
@@ -65,28 +58,23 @@ class Login(Resource):
         username=data.get('username')
         password=data.get('password')
 
-        db_user=User.query.filter_by(username=username).first()
+        currentUser=User.query.filter_by(username=username).first()
 
-        if db_user and check_password_hash(db_user.password, password):
-
-            access_token=create_access_token(identity=db_user.username)
-            refresh_token=create_refresh_token(identity=db_user.username)
+        if currentUser and check_password_hash(currentUser.password, password): # checking the password given with the one that is hashed ans stored! 
+            access_token=create_access_token(identity=currentUser.username) # access will only be given once the password sotred and given matches
+            refresh_token=create_refresh_token(identity=currentUser.username)
 
             return jsonify(
-                {"access_token":access_token,"refresh_token":refresh_token}
+                {"access_token":access_token,"refresh_token":refresh_token} 
             )
-
         else:
-            return jsonify({"message":"Invalid username or password"})
+            return jsonify({"message":"Invalid username and/or password"})
 
 
-@auth_ns.route('/refresh')
+@auth_ns.route('/refresh') # used to generate refresh token
 class RefreshResource(Resource):
     @jwt_required(refresh=True)
     def post(self):
-
-        current_user=get_jwt_identity()
-
-        new_access_token=create_access_token(identity=current_user)
-
+        currentUser=get_jwt_identity()
+        new_access_token=create_access_token(identity=currentUser)
         return make_response(jsonify({"access_token":new_access_token}),200)
